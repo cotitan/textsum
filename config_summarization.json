@@ -1,0 +1,43 @@
+{
+  "training": {
+    "optimizer": "adam",
+    "clip_c": 1,
+    "lrate": 0.0002
+  },
+  "management": {
+    "monitor_loss": 1000,
+    "print_samples": 20000
+  },
+  "data": {
+    "src": "sumdata/train/train.article.txt",
+    "trg": "sumdata/train/train.title.txt",
+    "test_src": "sumdata/Giga/input.txt",
+    "test_trg": "sumdata/Giga/task1_ref0.txt",
+    "batch_size": 1,
+    "valid_batch_size": 80,
+    "n_words_src": 30000,
+    "max_src_length": 100,
+    "max_trg_length": 20,
+    "task": "autoencode",
+    "save_dir": "models/",
+    "load_dir": "models/",
+    "output": "sumdata/Giga/models/output.txt"
+  },
+  "model": {
+    "dim": 1024,
+    "dim_trg": 1024,
+    "use_dropout": false,
+    "dim_word_src": 512,
+    "n_words_src": 30000,
+    "n_words": 30000,
+    "dim_word_trg": 512,
+    "n_layers_src": 2,
+    "n_layers_trg": 1,
+    "bidirectional": true,
+    "src_lang": "en",
+    "trg_lang": "en",
+    "decode": "beam",
+    "seq2seq": "vanilla",
+    "optimizer": "adam"
+  }
+}

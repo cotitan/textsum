@@ -1,0 +1,6 @@
+/sumdata
+/log
+/summary.tar.gz
+*.pyc
+*~
+/models/*
