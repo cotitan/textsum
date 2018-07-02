@@ -93,12 +93,9 @@ model = Seq2SeqAttentionSharedEmbedding(
     dropout=0.,
 ).cuda()
 
-if load_dir:
-    model.load_state_dict(torch.load(
-        open(os.path.join(
-            load_dir,
-            'model_autoencode__src_en__trg_en__attention_vanilla__dim_1024__emb_dim_512__optimizer_adam__n_layers_src_2__n_layers_trg_1__bidir_True__epoch_19.model'
-        ))))
+model_path = os.path.join(load_dir, "epoch_0.model")
+if os.path.exists(model_path):
+    model.load_state_dict(torch.load(open(model_path)))
 
 test_trg_h = open(output_path, 'w')
 test_sys_out = open('sumdata/Giga/systems/task1_ref0.txt', 'w')
