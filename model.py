@@ -42,7 +42,7 @@ class StackedAttentionLSTM(nn.Module):
             if ctx_mask is not None:
                 ctx_mask = torch.ByteTensor(
                     ctx_mask.data.cpu().numpy().astype(np.int32).tolist()
-                ).cuda()
+                )
             output, (h_1_i, c_1_i) = layer(input, (h_0, c_0), ctx, ctx_mask)
 
             input = output
@@ -119,8 +119,8 @@ class DeepBidirectionalLSTM(nn.Module):
             self.hidden_size
         ))
 
-        return (h0_encoder_bi.cuda(), c0_encoder_bi.cuda()), \
-            (h0_encoder.cuda(), c0_encoder.cuda())
+        return (h0_encoder_bi, c0_encoder_bi), \
+            (h0_encoder, c0_encoder)
 
     def forward(self, input):
         """Propogate input forward through the network."""
@@ -379,7 +379,7 @@ class LSTMAttentionDot(nn.Module):
         steps = range(input.size(0))
         for i in steps:
             hidden = recurrence(input[i], hidden)
-            output.append(isinstance(hidden, tuple) and hidden[0] or hidden)
+            output.append(hidden[0])
 
         output = torch.cat(output, 0).view(input.size(0), *output[0].size())
 
@@ -458,7 +458,7 @@ class Seq2Seq(nn.Module):
             self.src_hidden_dim * self.num_directions,
             trg_hidden_dim
         )
-        self.decoder2vocab = nn.Linear(trg_hidden_dim, trg_vocab_size).cuda()
+        self.decoder2vocab = nn.Linear(trg_hidden_dim, trg_vocab_size)
 
         self.init_weights()
 
@@ -485,7 +485,7 @@ class Seq2Seq(nn.Module):
             self.src_hidden_dim
         ))
 
-        return h0_encoder.cuda(), c0_encoder.cuda()
+        return h0_encoder, c0_encoder
 
     def forward(self, input_src, input_trg, ctx_mask=None, trg_mask=None):
         """Propogate input through the network."""
@@ -622,7 +622,7 @@ class Seq2SeqAutoencoder(nn.Module):
             self.src_hidden_dim,
             trg_hidden_dim
         )
-        self.decoder2vocab = nn.Linear(trg_hidden_dim, src_vocab_size).cuda()
+        self.decoder2vocab = nn.Linear(trg_hidden_dim, src_vocab_size)
 
         self.init_weights()
 
@@ -649,7 +649,7 @@ class Seq2SeqAutoencoder(nn.Module):
             self.src_hidden_dim
         ))
 
-        return h0_encoder.cuda(), c0_encoder.cuda()
+        return h0_encoder, c0_encoder
 
     def forward(self, input, ctx_mask=None, trg_mask=None):
         """Propogate input through the network."""
@@ -811,7 +811,7 @@ class Seq2SeqAttention(nn.Module):
             self.src_hidden_dim
         ), requires_grad=False)
 
-        return h0_encoder.cuda(), c0_encoder.cuda()
+        return h0_encoder, c0_encoder
 
     def forward(self, input_src, input_trg, trg_mask=None, ctx_mask=None):
         """Propogate input through the network."""
@@ -954,7 +954,7 @@ class Seq2SeqAttentionSharedEmbedding(nn.Module):
             self.src_hidden_dim
         ), requires_grad=False)
 
-        return h0_encoder.cuda(), c0_encoder.cuda()
+        return h0_encoder, c0_encoder
 
     def forward(self, input_src, input_trg, trg_mask=None, ctx_mask=None):
         """Propogate input through the network."""
@@ -1105,7 +1105,7 @@ class Seq2SeqFastAttention(nn.Module):
             self.src_hidden_dim
         ), requires_grad=False)
 
-        return h0_encoder.cuda(), c0_encoder.cuda()
+        return h0_encoder, c0_encoder
 
     def forward(self, input_src, input_trg, trg_mask=None, ctx_mask=None):
         """Propogate input through the network."""

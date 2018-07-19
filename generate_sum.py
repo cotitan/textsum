@@ -73,9 +73,11 @@ logging.info('Learning Rate : %f ' % (config['training']['lrate']))
 
 logging.info('Found %d words ' % (vocab_size))
 
-weight_mask = torch.ones(vocab_size).cuda()
+device = torch.device("cpu:0")
+
+weight_mask = torch.ones(vocab_size, device=device)
 weight_mask[trg['word2id']['<pad>']] = 0
-loss_criterion = nn.CrossEntropyLoss(weight=weight_mask).cuda()
+loss_criterion = nn.CrossEntropyLoss(weight=weight_mask)
 
 model = Seq2SeqAttentionSharedEmbedding(
     emb_dim=config['model']['dim_word_src'],
@@ -91,7 +93,7 @@ model = Seq2SeqAttentionSharedEmbedding(
     nlayers=config['model']['n_layers_src'],
     nlayers_trg=config['model']['n_layers_trg'],
     dropout=0.,
-).cuda()
+)
 
 model_path = os.path.join(load_dir, "epoch_0.model")
 if os.path.exists(model_path):
@@ -102,11 +104,11 @@ test_sys_out = open('sumdata/Giga/systems/task1_ref0.txt', 'w')
 
 for j in xrange(0, len(src_test['data']), batch_size):
     input_lines_src, _, lens_src, mask_src = get_minibatch(
-        src_test['data'], src_test['word2id'], j,
+        src_test['data'], src['word2id'], j,
         batch_size, max_length, add_start=True, add_end=True
     )
     input_lines_trg, output_lines_trg, lens_trg, mask_trg = get_minibatch(
-        trg_test['data'], trg_test['word2id'], j,
+        trg_test['data'], trg['word2id'], j,
         batch_size, max_length, add_start=True, add_end=True
     )
     decoder_logit = model(input_lines_src, input_lines_trg)

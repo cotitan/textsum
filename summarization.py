@@ -1,7 +1,5 @@
 #!/u/subramas/miniconda2/bin/python
 """Main script to run things"""
-import sys
-
 import numpy as np
 import logging
 import argparse
@@ -78,9 +76,9 @@ logging.info('Learning Rate : %f ' % (config['training']['lrate']))
 
 logging.info('Found %d words ' % (vocab_size))
 
-weight_mask = torch.ones(vocab_size).cuda()
+weight_mask = torch.ones(vocab_size)
 weight_mask[trg['word2id']['<pad>']] = 0
-loss_criterion = nn.CrossEntropyLoss(weight=weight_mask).cuda()
+loss_criterion = nn.CrossEntropyLoss(weight=weight_mask)
 
 model = Seq2SeqAttentionSharedEmbedding(
     emb_dim=config['model']['dim_word_src'],
@@ -96,14 +94,11 @@ model = Seq2SeqAttentionSharedEmbedding(
     nlayers=config['model']['n_layers_src'],
     nlayers_trg=config['model']['n_layers_trg'],
     dropout=0.,
-).cuda()
+)
 
-if load_dir:
-    model.load_state_dict(torch.load(
-        open(os.path.join(
-            load_dir,
-            'model_autoencode__src_en__trg_en__attention_vanilla__dim_1024__emb_dim_512__optimizer_adam__n_layers_src_2__n_layers_trg_1__bidir_True__epoch_19.model'
-        ))))
+model_path = os.path.join(load_dir, "epoch_0.model")
+if os.path.exists(model_path):
+    model.load_state_dict(torch.load(open(model_path)))
 
 bleu = evaluate_model(
     model, src, src_test, trg,
@@ -178,13 +173,7 @@ for i in xrange(1000):
                 logging.info('Real : %s ' % (' '.join(sentence_real)))
                 logging.info('===============================================')
 
-    torch.save(
-        model.state_dict(),
-        open(os.path.join(
-            save_dir,
-            experiment_name + '__epoch_%d' % (i) + '.model'), 'wb'
-        )
-    )
+    torch.save(model.state_dict(), open(os.path.join(save_dir, 'epoch_%d' % (i) + '.model'), 'wb'))
 
     bleu = evaluate_model(
         model, src, src_test, trg,

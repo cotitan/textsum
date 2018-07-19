@@ -50,7 +50,7 @@ class BeamSearchDecoder(object):
                 nlayers=self.config['model']['n_layers_src'],
                 nlayers_trg=self.config['model']['n_layers_trg'],
                 dropout=0.,
-            ).cuda()
+            )
 
         elif self.config['model']['seq2seq'] == 'attention':
             print 'Loading Seq2Seq Attention model'
@@ -71,7 +71,7 @@ class BeamSearchDecoder(object):
                 nlayers=self.config['model']['n_layers_src'],
                 nlayers_trg=self.config['model']['n_layers_trg'],
                 dropout=0.,
-            ).cuda()
+            )
 
         self.model.load_state_dict(torch.load(
             open(self.model_weights)
@@ -312,7 +312,7 @@ class GreedyDecoder(object):
                 nlayers=self.config['model']['n_layers_src'],
                 nlayers_trg=self.config['model']['n_layers_trg'],
                 dropout=0.,
-            ).cuda()
+            )
 
         elif self.config['model']['seq2seq'] == 'attention':
             print 'Loading Seq2Seq Attention model'
@@ -333,7 +333,7 @@ class GreedyDecoder(object):
                 nlayers=self.config['model']['n_layers_src'],
                 nlayers_trg=self.config['model']['n_layers_trg'],
                 dropout=0.,
-            ).cuda()
+            )
 
         self.model.load_state_dict(torch.load(
             open(self.model_weights)
@@ -353,7 +353,7 @@ class GreedyDecoder(object):
             decoder_argmax = word_probs.data.cpu().numpy().argmax(axis=-1)
             next_preds = Variable(
                 torch.from_numpy(decoder_argmax[:, -1])
-            ).cuda()
+            )
 
             input_lines_trg = torch.cat(
                 (input_lines_trg, next_preds.unsqueeze(1)),
@@ -406,7 +406,7 @@ class GreedyDecoder(object):
                     [trg['word2id']['<s>']]
                     for i in xrange(input_lines_src.size(0))
                 ]
-            ), volatile=True).cuda()
+            ), volatile=True)
 
             # Decode a minibatch greedily __TODO__ add beam search decoding
             input_lines_trg = self.decode_minibatch(

@@ -86,7 +86,7 @@ def decode_minibatch(
         decoder_argmax = word_probs.data.cpu().numpy().argmax(axis=-1)
         next_preds = Variable(
             torch.from_numpy(decoder_argmax[:, -1])
-        ).cuda()
+        )
 
         input_lines_trg = torch.cat(
             (input_lines_trg, next_preds.unsqueeze(1)),
@@ -168,7 +168,7 @@ def evaluate_model(
                 [trg['word2id']['<s>']]
                 for i in xrange(input_lines_src.size(0))
             ]
-        )).cuda()
+        ))
 
         # Decode a minibatch greedily __TODO__ add beam search decoding
         input_lines_trg = decode_minibatch(
@@ -239,7 +239,7 @@ def evaluate_autoencode_model(
                 [src['word2id']['<s>']]
                 for i in xrange(input_lines_src.size(0))
             ]
-        )).cuda()
+        ))
 
         for i in xrange(config['data']['max_src_length']):
 
@@ -248,7 +248,7 @@ def evaluate_autoencode_model(
             decoder_argmax = word_probs.data.cpu().numpy().argmax(axis=-1)
             next_preds = Variable(
                 torch.from_numpy(decoder_argmax[:, -1])
-            ).cuda()
+            )
 
             input_lines_trg = torch.cat(
                 (input_lines_trg, next_preds.unsqueeze(1)),
